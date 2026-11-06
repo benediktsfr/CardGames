@@ -11,7 +11,8 @@ public enum Kartenwerte {
     FUENF(5, "5"),
     VIER(4, "4"),
     DREI(3, "3"),
-    ZWEI(2, "2");
+    ZWEI(2, "2"),
+    JOKER(0, "Joker");
 
     private final int wert;
     private final String displayName;
