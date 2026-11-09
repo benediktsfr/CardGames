@@ -5,7 +5,7 @@ import java.util.Random;
 
 public class Deck {
 
-    private final Karten[] deck;
+    private Karten[] deck;
 
     public Deck(DeckTypes deckLength) {
         deck = new Karten[deckLength.getDeckLengths()];
@@ -29,13 +29,16 @@ public class Deck {
 
     };
 
-    public void printDeckAsList() {
-        for (Karten i : deck) {
-            System.out.println(i.printKarte(" "));
+    public String printDeckAsList() {
+        String list = deck[0].printKarte(" ");
+        for (int i = 1; i < deck.length; i++) {
+            list += ("\n" + deck[i].printKarte(" "));
         }
+        return list;
     };
 
-    public void printDeckAsMatrix() {
+    public String printDeckAsMatrix() {
+        String mat = "";
         int index = 0;
         int jokers = deck.length % 4;
             for (int i = 1; i < 4 + 1; i++) {
@@ -49,8 +52,12 @@ public class Deck {
                     index++;
                     jokers--;
                 }
-                System.out.println(ebene);
+                mat += ebene;
+                if (i < 3) {
+                    mat += "\n";
+                }
             }
+        return mat;
     };
 
     public int findIndexOfCard(Farben farbe, Kartenwerte wert) {
@@ -77,7 +84,38 @@ public class Deck {
 
     public void sortDeck() {
         Arrays.sort(deck, Comparator.comparing(Karten::getFarbe)
-                .thenComparingInt((Karten karte) -> karte.getWert().getWert()).reversed());
+                .thenComparing(Karten::getWert));
     }
-}
 
+    public void swapCardsByCard(Karten karte1, Karten karte2) {
+        int index1 = findIndexOfCard(karte1.getFarbe(), karte1.getWert());
+        int index2 = findIndexOfCard(karte2.getFarbe(), karte2.getWert());
+
+        if (index1 != -1 && index2 != -1) {
+            Karten temp = deck[index1];
+            deck[index1] = deck[index2];
+            deck[index2] = temp;
+        }
+    }
+
+    public void swapCardsByIndex(int index1, int index2) {
+        if (index1 >= 0 && index1 < deck.length && index2 >= 0 && index2 < deck.length) {
+            Karten temp = deck[index1];
+            deck[index1] = deck[index2];
+            deck[index2] = temp;
+        }
+    }
+
+    // public void removeCard(int index){
+    //     if (index >= 0 && index < deck.length) {
+    //         Karten[] newDeck = new Karten[deck.length - 1];
+    //         for (int i = 0; i < index; i++) {
+    //             newDeck[i] = deck[i];
+    //         }
+    //         for (int i = index; i < deck.length - 1; i++) {
+    //             newDeck[i] = deck[i + 1];
+    //         }
+    //         deck = newDeck;
+    //     }
+    // }
+}
