@@ -1,26 +1,25 @@
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Random;
 
 public class Deck {
 
-    private Karten[] deck;
+    private final ArrayList<Karten> deck;
 
     public Deck(DeckTypes deckLength) {
-        deck = new Karten[deckLength.getDeckLengths()];
+
+        deck = new ArrayList<>();
         int index = 0;
         int infarbe = 0;
         int jokers = deckLength.getDeckLengths() % 4;
-
+        
         while (infarbe < 4) {
             for (int i = 0; i < Math.floor(deckLength.getDeckLengths() / 4); i++) {
-                deck[index] = new Karten(Farben.values()[infarbe], Kartenwerte.values()[i]);
-                index++;
+                deck.add(new Karten(Suits.values()[infarbe], CardValues.values()[i]));
             }
             if (jokers > 0) {
-                deck[index] = new Karten(Farben.values()[infarbe], Kartenwerte.JOKER);
-                index++;
+                deck.add(new Karten(Suits.values()[infarbe], CardValues.JOKER));
                 jokers--;
             }
             infarbe++;
@@ -30,9 +29,9 @@ public class Deck {
     };
 
     public String printDeckAsList() {
-        String list = deck[0].printKarte(" ");
-        for (int i = 1; i < deck.length; i++) {
-            list += ("\n" + deck[i].printKarte(" "));
+        String list = deck.get(0).printKarte(" ");
+        for (int i = 1; i < deck.size(); i++) {
+            list += ("\n" + deck.get(i).printKarte(" "));
         }
         return list;
     };
@@ -40,82 +39,91 @@ public class Deck {
     public String printDeckAsMatrix() {
         String mat = "";
         int index = 0;
-        int jokers = deck.length % 4;
+        int jokers = deck.size() % 4;
             for (int i = 1; i < 4 + 1; i++) {
                 String ebene = "";
-                for (int j = 1; j < deck.length / 4 + 1; j++) {
-                    ebene = ebene + "[" + deck[index].printKarte("|") + "] ";
+                for (int j = 1; j < deck.size() / 4 + 1; j++) {
+                    ebene = ebene + "[" + deck.get(index).printKarte("|") + "] ";
                     index++;
                 }
                 if (jokers > 0) {
-                    ebene = ebene + "[" + deck[index].printKarte("|") + "] ";
+                    ebene = ebene + "[" + deck.get(index).printKarte("|") + "] ";
                     index++;
                     jokers--;
                 }
                 mat += ebene;
-                if (i < 3) {
+                if (i < 4) {
                     mat += "\n";
                 }
             }
         return mat;
     };
 
-    public int findIndexOfCard(Farben farbe, Kartenwerte wert) {
+    public int findIndexOfCard(Suits suit, CardValues value) {
 
-        for (int i = 0; i < deck.length; i++) {
-            if (deck[i].getWert() == wert && deck[i].getFarbe() == farbe) {
+        for (int i = 0; i < deck.size(); i++) {
+            if (deck.get(i).getValues() == value && deck.get(i).getSuits() == suit) {
                 return i;
             }
         }
         return -1;
     }
 
+    public boolean isCardInDeck(Suits suit, CardValues value) {
+        return findIndexOfCard(suit, value) != -1;
+    }
+
     public void shuffleDeck() {
 
         Random random = new Random();
 
-        for (int i = deck.length - 1; i > 0; i--) {
+        for (int i = deck.size() - 1; i > 0; i--) {
             int j = random.nextInt(i + 1);
-            Karten temp = deck[i];
-            deck[i] = deck[j];
-            deck[j] = temp;
+            Karten temp = deck.get(i);
+            deck.set(i, deck.get(j));
+            deck.set(j, temp);
         }
     }
 
     public void sortDeck() {
-        Arrays.sort(deck, Comparator.comparing(Karten::getFarbe)
-                .thenComparing(Karten::getWert));
+        deck.sort(Comparator.comparing(Karten::getSuits).thenComparing(Karten::getValues));
     }
 
-    public void swapCardsByCard(Karten karte1, Karten karte2) {
-        int index1 = findIndexOfCard(karte1.getFarbe(), karte1.getWert());
-        int index2 = findIndexOfCard(karte2.getFarbe(), karte2.getWert());
+    public void swapCardsByCard(Karten card1, Karten card2) {
+        int index1 = findIndexOfCard(card2.getSuits(), card2.getValues());
+        int index2 = findIndexOfCard(card2.getSuits(), card2.getValues());
 
         if (index1 != -1 && index2 != -1) {
-            Karten temp = deck[index1];
-            deck[index1] = deck[index2];
-            deck[index2] = temp;
+            Karten temp;
+            temp = deck.get(index1);
+            deck.set(index1, deck.get(index2));
+            deck.set(index2, temp);
         }
     }
 
     public void swapCardsByIndex(int index1, int index2) {
-        if (index1 >= 0 && index1 < deck.length && index2 >= 0 && index2 < deck.length) {
-            Karten temp = deck[index1];
-            deck[index1] = deck[index2];
-            deck[index2] = temp;
+        if (index1 >= 0 && index1 < deck.size() && index2 >= 0 && index2 < deck.size()) {
+            Karten temp = deck.get(index1);
+            deck.set(index1, deck.get(index2));
+            deck.set(index2, temp);
         }
     }
 
-    // public void removeCard(int index){
-    //     if (index >= 0 && index < deck.length) {
-    //         Karten[] newDeck = new Karten[deck.length - 1];
-    //         for (int i = 0; i < index; i++) {
-    //             newDeck[i] = deck[i];
-    //         }
-    //         for (int i = index; i < deck.length - 1; i++) {
-    //             newDeck[i] = deck[i + 1];
-    //         }
-    //         deck = newDeck;
-    //     }
-    // }
+    public void removeTopCard() {
+        if (!deck.isEmpty()) {
+            deck.remove(deck.size() - 1);
+        }
+    }
+
+    public void removeBottomCard() {
+        if (!deck.isEmpty()) {
+            deck.remove(0);
+        }
+    }
+
+    public void removeIndex(int index){
+        if (index >= 0 && index < deck.size()) {
+            deck.remove(index);
+        }
+    }
 }

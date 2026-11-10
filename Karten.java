@@ -1,23 +1,23 @@
 
 public class Karten {
 
-    private final Kartenwerte wert;
-    private final Farben farbe;
+    private final CardValues value;
+    private final Suits suit;
 
-    public Karten(Farben farbe, Kartenwerte wert) {
-        this.wert = wert;
-        this.farbe = farbe;
+    public Karten(Suits suit, CardValues value) {
+        this.value = value;
+        this.suit = suit;
     }
 
-    public Kartenwerte getWert() {
-        return wert;
+    public CardValues getValues() {
+        return value;
     }
 
-    public Farben getFarbe() {
-        return farbe;
+    public Suits getSuits() {
+        return suit;
     }
 
-    public String printKarte(String trenner) {
-        return farbe.getDisplayName() + trenner + wert.getDisplayName();
+    public String printKarte(String seperator) {
+        return suit.getDisplayName() + seperator + value.getDisplayName();
     }
 }

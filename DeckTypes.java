@@ -1,5 +1,5 @@
 public enum DeckTypes {
-    DEUTSCH(32),
+    GERMAN(32),
     STANDARD(52),
     POKER(54),
     ROMMEE(56);
