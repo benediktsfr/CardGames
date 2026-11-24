@@ -47,7 +47,7 @@ public class Deck {
     }
 
     public void deal(Hands hand) {
-        hand.add(deck.drawTopCard());
+        hand.addCards(drawTopCard());
     }
 
     public String printDeckAsList() {
